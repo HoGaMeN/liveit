@@ -7,7 +7,7 @@
 
     <h1 class="h5 mb-4 text-gray-800">Ayo segera buat rencana sewa temapt live yang nyaman dan gampang bersama LIVEIT!!!</h1>
     <hr class="sidebar-divider">
-
+    <a href="<?= base_url('/user/sewa'); ?>" class="btn btn-info">Sewa Sekarang!!!</a>
     <hr class="sidebar-divider">
     <table class="table">
         <thead>
@@ -18,6 +18,8 @@
                 <th scope="col">Tanggal Booking</th>
                 <th scope="col">Tanggal Checkout</th>
                 <th scope="col">Total</th>
+                <th scope="col">Status</th>
+                <th scope="col">Aksi</th>
             </tr>
         </thead>
         <tbody>
@@ -30,6 +32,10 @@
                     <td><?= $trx['tanggal_booking']; ?></td>
                     <td><?= $trx['tanggal_checkout']; ?></td>
                     <td><?= $trx['total']; ?></td>
+                    <td><?= $trx['status']; ?></td>
+                    <td>
+                        <a type="button" href="<?= base_url('user/detailTransaksi/' . $trx['id_transaksi']); ?>" class="btn btn-info">Detail</a>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

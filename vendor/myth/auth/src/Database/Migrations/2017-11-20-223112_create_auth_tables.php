@@ -72,13 +72,16 @@ class CreateAuthTables extends Migration
             'id_transaksi'       => ['type' => 'int', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
             'id_user'            => ['type' => 'int', 'constraint' => 11, 'unsigned' => true],
             'id_paket'           => ['type' => 'int', 'constraint' => 11, 'unsigned' => true],
+            'id_ruangan'         => ['type' => 'int', 'constraint' => 11, 'unsigned' => true],
             'tanggal_booking'    => ['type' => 'datetime', 'null' => false],
             'tanggal_checkout'   => ['type' => 'datetime', 'null' => false],
             'total'              => ['type' => 'int', 'constraint' => 11, 'null' => false],
+            'total'              => ['type' => 'varchar', 'constraint' => 15, 'null' => false],
         ]);
         $this->forge->addKey('id_transaksi', true);
         $this->forge->addForeignKey('id_user', 'users', 'id', '', 'CASCADE');
         $this->forge->addForeignKey('id_paket', 'paket', 'id_paket', '', 'CASCADE');
+        $this->forge->addForeignKey('id_ruangan', 'ruangan', 'id_ruangan', '', 'CASCADE');
         $this->forge->createTable('transaksi', true);
 
         // Auth Login Attempts

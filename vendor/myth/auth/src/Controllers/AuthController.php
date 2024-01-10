@@ -65,8 +65,18 @@ class AuthController extends Controller
     public function attemptLogin()
     {
         $rules = [
-            'login'    => 'required',
-            'password' => 'required',
+            'login'    => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Alamat Email Wajib Diisikan'
+                ]
+            ],
+            'password' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Kata Sandi Wajib Diisikan'
+                ]
+            ]
         ];
         if ($this->config->validFields === ['email']) {
             $rules['login'] .= '|valid_email';

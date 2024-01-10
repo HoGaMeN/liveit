@@ -8,6 +8,13 @@ class DataAwalSeeder extends Seeder
 {
     public function run()
     {
+        // Memasukkan data ke tabel 'role'
+        $dataRole = [
+            ['name' => 'admin', 'description' => 'untuk admin'],
+            ['name' => 'user', 'description' => 'untuk user biasa'],
+        ];
+        $this->db->table('auth_groups')->insertBatch($dataRole);
+
         // Memasukkan data ke tabel 'layanan'
         $dataLayanan = [
             ['nama_layanan' => 'Reguler Commerce', 'kelas_paket' => 'A', 'nominal_perjam' => 15000],

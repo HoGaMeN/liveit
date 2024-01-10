@@ -1,9 +1,10 @@
-<p>This is activation email for your account on <?= site_url() ?>.</p>
+<p>"Selamat Datang di LIVEIT"</p>
+<p>Terimakasih Telah Bergabung Dengan Kami <?= site_url() ?>.</p>
 
-<p>To activate your account use this URL.</p>
+<p>Untuk mengaktifkan akun untuk login, anda perlu menekan link di bawah ini</p>
 
-<p><a href="<?= url_to('activate-account') . '?token=' . $hash ?>">Activate account</a>.</p>
+<p><a href="<?= url_to('activate-account') . '?token=' . $hash ?>">Aktifkan Akun</a>.</p>
 
 <br>
 
-<p>If you did not registered on this website, you can safely ignore this email.</p>
+<p>Jika Anda tidak mendaftar di situs web ini, Anda dapat mengabaikan email ini dengan aman.</p>
