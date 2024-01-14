@@ -26,3 +26,5 @@ $routes->post('/user/simpanTransaksi', 'User::simpanTransaksi', ['filter' => 'ro
 $routes->post('/user/simpanTransaksi', 'User::simpanTransaksi', ['filter' => 'role:admin']);
 $routes->get('/user/detailTransaksi/(:num)', 'User::detailTransaksi/$1', ['filter' => 'role:user']);
 $routes->get('/user/detailTransaksi/(:num)', 'User::detailTransaksi/$1', ['filter' => 'role:admin']);
+$routes->get('/pembayaran/berhasil/(:segment)', 'User::pembayaranBerhasil/$1');
+$routes->post('/pembayaran/midtrans-notification', 'User::verifikasiPembayaran');

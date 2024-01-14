@@ -14,11 +14,13 @@ class User extends BaseController
 {
     protected $ruanganModel;
     protected $layananModel;
+    protected $transaksiModel;
 
     public function __construct()
     {
         $this->ruanganModel = new RuanganModel();
         $this->layananModel = new LayananModel();
+        $this->transaksiModel = new TransaksiModel();
     }
 
     public function index()
@@ -146,14 +148,45 @@ class User extends BaseController
     public function detailTransaksi($idTransaksi)
     {
         $transaksiModel = new \App\Models\TransaksiModel();
-        $dataTransaksi = $transaksiModel->getDetailTransaksiById($idTransaksi);
 
+        // Pastikan bahwa Anda memang mendapatkan data transaksi.
+        $dataTransaksi = $transaksiModel->getDetailTransaksiById($idTransaksi);
         if (!$dataTransaksi) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Data Transaksi tidak ditemukan');
         }
 
-        // Periksa struktur $dataTransaksi dengan var_dump() atau print_r() untuk memastikan apakah itu array atau objek
-        // var_dump($dataTransaksi); exit;
+        // Set konfigurasi Midtrans.
+        \Midtrans\Config::$serverKey = 'Mid-server-1BvPZNaT-5G94_yU4GcU-RBm';
+        \Midtrans\Config::$isProduction = true;
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
+        // Generate order ID menggunakan ID transaksi dan timestamp.
+        $orderId = 'TRANS-' . $idTransaksi . '-' . time();
+
+        // Buat parameter untuk request token snap Midtrans.
+        $params = [
+            'transaction_details' => [
+                'order_id' => $orderId,
+                'gross_amount' => 1,
+                // 'gross_amount' => $dataTransaksi['total'], // Pastikan 'total' ini sesuai dengan nama kolom di tabel transaksi Anda
+            ],
+            // Anda dapat menambahkan item lainnya jika diperlukan
+        ];
+
+        // Dapatkan snap token dari Midtrans.
+        $snapToken = \Midtrans\Snap::getSnapToken($params);
+
+        // Update order_id di database sebelum mengirimkan ke view.
+        // Cek dulu apakah kolom order_id sudah ada di tabel transaksi Anda.
+        if (isset($dataTransaksi['order_id']) && $dataTransaksi['order_id'] != $orderId) {
+            $updateData = ['order_id' => $orderId];
+            $updateResult = $transaksiModel->update($idTransaksi, $updateData);
+
+            // Periksa apakah ada perubahan yang dilakukan, jika tidak ada maka lempar exception.
+            if ($updateResult === false) {
+                throw new \CodeIgniter\Database\Exceptions\DataException('There is no data to update.');
+            }
+        }
 
         // Jika $dataTransaksi adalah array, gunakan sintaks array untuk mengakses data
         $checkInTime = strtotime($dataTransaksi['tanggal_booking']);
@@ -164,16 +197,115 @@ class User extends BaseController
         $waktuSekarang = time();
         $hitungMundurBerjalan = $waktuSekarang >= $checkInTime;
 
+        // Siapkan data untuk dikirim ke view.
         $data = [
             'title' => 'Detail Transaksi',
             'transaksi' => $dataTransaksi,
+            'snapToken' => $snapToken, // Kirim token snap ke view
             'durasiSewaJam' => $durasiSewaJam,
             'hitungMundurBerjalan' => $hitungMundurBerjalan,
             'waktuSekarang' => $waktuSekarang,
             'checkInTime' => $checkInTime,
-            'checkOutTime' => $checkOutTime
+            'checkOutTime' => $checkOutTime,
+            'token' => $snapToken
+            // Data lainnya yang dibutuhkan oleh view Anda
         ];
 
         return view('auth/User/detail_transaksi', $data);
+    }
+
+    // public function pembayaran($idTransaksi)
+    // {
+    //     // Ambil data transaksi dari database
+    //     $transaksi = $this->transaksiModel->find($idTransaksi);
+
+    //     // Periksa jika transaksi tidak ditemukan
+    //     if (!$transaksi) {
+    //         throw new \CodeIgniter\Exceptions\PageNotFoundException('Transaksi tidak ditemukan');
+    //     }
+
+    //     // Konfigurasi Midtrans
+    //     \Midtrans\Config::$serverKey = 'Mid-server-1BvPZNaT-5G94_yU4GcU-RBm';
+    //     \Midtrans\Config::$isProduction = true; // true jika environment produksi
+    //     \Midtrans\Config::$isSanitized = true;
+    //     \Midtrans\Config::$is3ds = true;
+
+    //     // Parameter yang diperlukan oleh Midtrans
+    //     $params = [
+    //         'transaction_details' => [
+    //             'order_id' => $transaksi['order_id'], // order_id yang unik dari transaksi Anda
+    //             'gross_amount' => $transaksi['total'], // total pembayaran
+    //         ],
+    //         // Anda bisa menambahkan parameter lainnya sesuai dokumentasi Midtrans
+    //     ];
+
+    //     // Mendapatkan snap token dari Midtrans
+    //     $snapToken = \Midtrans\Snap::getSnapToken($params);
+
+    //     // Passing snapToken ke view untuk digunakan oleh JavaScript Snap
+    //     return view('path_to_your_payment_view', [
+    //         'snap_token' => $snapToken,
+    //         'transaksi' => $transaksi,
+    //     ]);
+    // }
+    public function verifikasiPembayaran()
+    {
+        // Ambil order_id dari POST request yang dikirim oleh Midtrans notification
+        $orderId = $this->request->getPost('order_id');
+
+        // Verifikasi pembayaran ke Midtrans
+        $status = $this->verifikasiPembayaranMidtrans($orderId);
+
+        // Logika untuk memperbarui status pembayaran di database
+        if ($status == 'success') {
+            // Pembayaran berhasil
+            $this->transaksiModel->updateStatusTransaksi($orderId, 'Pembayaran Ber
+        hasil');
+        } else {
+            // Pembayaran gagal atau belum selesai
+            $this->transaksiModel->updateStatusTransaksi($orderId, 'Pembayaran Gagal');
+        }
+    }
+
+    private function verifikasiPembayaranMidtrans($orderId)
+    {
+        // Konfigurasi Midtrans
+        \Midtrans\Config::$serverKey = 'Mid-server-1BvPZNaT-5G94_yU4GcU-RBm';
+        \Midtrans\Config::$isProduction = true; // true jika environment produksi
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
+
+        try {
+            // Melakukan request status transaksi ke Midtrans
+            $response = \Midtrans\Transaction::status($orderId);
+
+            // Pastikan bahwa response adalah array
+            if (is_array($response)) {
+                // Cek status transaksi
+                if ($response['transaction_status'] == 'settlement' || $response['transaction_status'] == 'capture') {
+                    // Transaksi berhasil
+                    return 'success';
+                } else {
+                    // Transaksi gagal atau belum selesai
+                    return 'failure';
+                }
+            } else {
+                // Respon tidak valid
+                return 'failure';
+            }
+        } catch (\Exception $e) {
+            // Terjadi kesalahan saat memanggil API Midtrans
+            error_log($e->getMessage());
+            return 'failure';
+        }
+    }
+
+    public function pembayaranBerhasil($orderId)
+    {
+        // Verifikasi pembayaran dan update status transaksi
+        $this->verifikasiPembayaran();
+
+        // Redirect ke halaman konfirmasi dengan pesan sukses
+        return redirect()->to('/user/rencana')->with('message', 'Pembayaran Berhasil');
     }
 }

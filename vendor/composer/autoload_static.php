@@ -26,6 +26,7 @@ class ComposerStaticInite5485bfaa7555ba2481083d284d40fe6
         'M' => 
         array (
             'Myth\\Auth\\' => 10,
+            'Midtrans\\' => 9,
         ),
         'L' => 
         array (
@@ -66,6 +67,10 @@ class ComposerStaticInite5485bfaa7555ba2481083d284d40fe6
         'Myth\\Auth\\' => 
         array (
             0 => __DIR__ . '/..' . '/myth/auth/src',
+        ),
+        'Midtrans\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans',
         ),
         'Laminas\\Escaper\\' => 
         array (
@@ -1015,6 +1020,14 @@ class ComposerStaticInite5485bfaa7555ba2481083d284d40fe6
         'Laminas\\Escaper\\Exception\\ExceptionInterface' => __DIR__ . '/..' . '/laminas/laminas-escaper/src/Exception/ExceptionInterface.php',
         'Laminas\\Escaper\\Exception\\InvalidArgumentException' => __DIR__ . '/..' . '/laminas/laminas-escaper/src/Exception/InvalidArgumentException.php',
         'Laminas\\Escaper\\Exception\\RuntimeException' => __DIR__ . '/..' . '/laminas/laminas-escaper/src/Exception/RuntimeException.php',
+        'Midtrans\\ApiRequestor' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/ApiRequestor.php',
+        'Midtrans\\Config' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/Config.php',
+        'Midtrans\\CoreApi' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/CoreApi.php',
+        'Midtrans\\Notification' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/Notification.php',
+        'Midtrans\\Sanitizer' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/Sanitizer.php',
+        'Midtrans\\Snap' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/Snap.php',
+        'Midtrans\\SnapApiRequestor' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/SnapApiRequestor.php',
+        'Midtrans\\Transaction' => __DIR__ . '/..' . '/midtrans/midtrans-php/Midtrans/Transaction.php',
         'Myth\\Auth\\AuthTrait' => __DIR__ . '/..' . '/myth/auth/src/AuthTrait.php',
         'Myth\\Auth\\Authentication\\Activators\\ActivatorInterface' => __DIR__ . '/..' . '/myth/auth/src/Authentication/Activators/ActivatorInterface.php',
         'Myth\\Auth\\Authentication\\Activators\\BaseActivator' => __DIR__ . '/..' . '/myth/auth/src/Authentication/Activators/BaseActivator.php',

@@ -8,6 +8,8 @@ class TransaksiModel extends Model
 {
     protected $table = 'transaksi';
     protected $allowedFields = ['id_transaksi', 'id_user', 'id_paket', 'tanggal_booking', 'tanggal_checkout', 'total', 'status'];
+    protected $primaryKey = 'id_transaksi'; // atau nama kolom yang benar untuk primary key tabel transaksi Anda
+
 
     public function getTransaksiByUserId($userId)
     {
