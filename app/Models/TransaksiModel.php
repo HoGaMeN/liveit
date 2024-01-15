@@ -31,4 +31,10 @@ class TransaksiModel extends Model
             ->where('transaksi.id_transaksi', $idTransaksi)
             ->first();
     }
+
+    public function updateStatusTransaksi($id, $newStatus)
+    {
+        $data = ['status' => $newStatus];
+        return $this->update($id, $data);
+    }
 }

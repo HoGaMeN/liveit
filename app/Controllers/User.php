@@ -303,7 +303,7 @@ class User extends BaseController
     public function pembayaranBerhasil($orderId)
     {
         // Verifikasi pembayaran dan update status transaksi
-        $this->verifikasiPembayaran();
+        $this->transaksiModel->updateStatusTransaksi($orderId, 'Pembayaran Berhasil');
 
         // Redirect ke halaman konfirmasi dengan pesan sukses
         return redirect()->to('/user/rencana')->with('message', 'Pembayaran Berhasil');
