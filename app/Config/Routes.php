@@ -10,6 +10,7 @@ $routes->get('/', 'User::index', ['filter' => 'role:admin']);
 $routes->get('/admin', 'Admin::index', ['filter' => 'role:admin']);
 $routes->get('/admin/ruangan', 'Admin::daftar_ruangan', ['filter' => 'role:admin']);
 $routes->get('/admin/(:num)', 'Admin::detail_user/$1', ['filter' => 'role:admin']);
+$routes->get('/admin/daftar_transaksi', 'Admin::daftar_transaksi', ['filter' => 'role:admin']);
 $routes->get('/login', 'Home::login');
 $routes->get('/register', 'Home::register');
 $routes->get('/user', 'User::index', ['filter' => 'role:user']);

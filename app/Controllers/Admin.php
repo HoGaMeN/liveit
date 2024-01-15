@@ -4,17 +4,20 @@ namespace App\Controllers;
 
 use Myth\Auth\Models\GroupModel;
 use App\Models\RuanganModel;
+use App\Models\TransaksiModel;
 
 class Admin extends BaseController
 {
     protected $db, $builder;
     protected $ruanganModel;
+    protected $transaksiModel;
 
     public function __construct()
     {
         $this->db = \Config\Database::connect();
         $this->builder = $this->db->table('users');
         $this->ruanganModel = new RuanganModel();
+        $this->transaksiModel = new TransaksiModel();
     }
 
     public function index()
@@ -55,5 +58,15 @@ class Admin extends BaseController
         ];
 
         return view('admin/ruangan', $data);
+    }
+
+    public function daftar_transaksi()
+    {
+        $data = [
+            'title' => "LIVEIT-Daftar Transaksi",
+            'transaksis' => $this->transaksiModel->getDaftarTransaksi(),
+        ];
+
+        return view('admin/daftar_transaksi', $data);
     }
 }

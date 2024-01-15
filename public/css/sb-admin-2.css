@@ -11279,3 +11279,14 @@ footer.sticky-footer .copyright {
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
+
+/* CSS untuk membuat tabel responsif dan dengan auto-scroll */
+.responsive-table {
+  overflow-x: auto; /* Menambahkan scroll horizontal jika diperlukan */
+  display: block;
+}
+
+.table-responsive {
+  max-height: 400px; /* Atur sesuai kebutuhan */
+  overflow-y: auto; /* Menambahkan scroll vertikal */
+}
