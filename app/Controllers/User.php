@@ -176,6 +176,9 @@ class User extends BaseController
         // Dapatkan snap token dari Midtrans.
         $snapToken = \Midtrans\Snap::getSnapToken($params);
 
+        // Menyimpan id transaksi ke dalam session
+        session()->set('id_transaksi', $idTransaksi);
+
         // Update order_id di database sebelum mengirimkan ke view.
         // Cek dulu apakah kolom order_id sudah ada di tabel transaksi Anda.
         if (isset($dataTransaksi['order_id']) && $dataTransaksi['order_id'] != $orderId) {
@@ -300,10 +303,14 @@ class User extends BaseController
         }
     }
 
-    public function pembayaranBerhasil($orderId)
+    public function pembayaranBerhasil()
     {
+        $idTransaksi = session()->get('id_transaksi');
         // Verifikasi pembayaran dan update status transaksi
-        $this->transaksiModel->updateStatusTransaksi($orderId, 'Pembayaran Berhasil');
+        if ($idTransaksi) {
+            $this->transaksiModel->updateStatusTransaksi($idTransaksi, 'Pembayaran Berhasil');
+            session()->remove('id_transaksi');
+        }
 
         // Redirect ke halaman konfirmasi dengan pesan sukses
         return redirect()->to('/user/rencana')->with('message', 'Pembayaran Berhasil');

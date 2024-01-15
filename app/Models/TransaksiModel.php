@@ -32,9 +32,9 @@ class TransaksiModel extends Model
             ->first();
     }
 
-    public function updateStatusTransaksi($id, $newStatus)
+    public function updateStatusTransaksi($idTransaksi, $newStatus)
     {
         $data = ['status' => $newStatus];
-        return $this->update($id, $data);
+        return $this->update($idTransaksi, $data);
     }
 }
